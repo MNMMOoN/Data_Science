@@ -358,8 +358,9 @@ class Evaluation:
         y_true_labels (ndarray): Ground-truth class indices.
     """
 
-    def __init__(self, model, test_data, class_names, verbose=True):
+    def __init__(self, model, test_data, class_names, history= None, verbose=True):
         self.model = model
+        self.history = history
         self.test_data = test_data
         self.class_names = class_names
         self.verbose = verbose
@@ -388,34 +389,34 @@ class Evaluation:
         self.pred = np.argmax(y_pred, axis=1)
 
     def plot_val_eval(self):
-        """
-        Plots training/validation loss and accuracy curves using model.history.
-        Assumes that model has a `history` attribute (from model.fit()).
-        """
-        if not hasattr(self.model, 'history') or not hasattr(self.model.history, 'history'):
-            print("[WARNING] Model does not have training history.")
-            return
+        if self.history is None:
+            raise ValueError("Training history is not provided.")
 
-        history = pd.DataFrame(self.model.history.history)
+        history_df = pd.DataFrame(self.history.history)
 
         fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
-        axes[0].plot(history['loss'], label='Training Loss')
-        axes[0].plot(history['val_loss'], label='Validation Loss')
-        axes[0].set_title('Loss Curve')
-        axes[0].set_xlabel('Epochs')
-        axes[0].set_ylabel('Loss')
-        axes[0].legend()
+        if 'loss' in history_df.columns and 'val_loss' in history_df.columns:
+            axes[0].plot(history_df['loss'], label='Training Loss')
+            axes[0].plot(history_df['val_loss'], label='Validation Loss')
+            axes[0].set_xlabel('Epochs')
+            axes[0].set_ylabel('Loss')
+            axes[0].legend()
+        else:
+            axes[0].text(0.5, 0.5, "Loss data not available", ha='center')
 
-        axes[1].plot(history['accuracy'], label='Training Accuracy')
-        axes[1].plot(history['val_accuracy'], label='Validation Accuracy')
-        axes[1].set_title('Accuracy Curve')
-        axes[1].set_xlabel('Epochs')
-        axes[1].set_ylabel('Accuracy')
-        axes[1].legend()
+        if 'accuracy' in history_df.columns and 'val_accuracy' in history_df.columns:
+            axes[1].plot(history_df['accuracy'], label='Training Accuracy')
+            axes[1].plot(history_df['val_accuracy'], label='Validation Accuracy')
+            axes[1].set_xlabel('Epochs')
+            axes[1].set_ylabel('Accuracy')
+            axes[1].legend()
+        else:
+            axes[1].text(0.5, 0.5, "Accuracy data not available", ha='center')
 
         plt.tight_layout()
         plt.show()
+
 
     def plot_test_eval(self):
         """
@@ -466,4 +467,3 @@ class Evaluation:
         ax.set_xticklabels(self.class_names, rotation=45, ha='right')
         plt.tight_layout()
         plt.show()
-
