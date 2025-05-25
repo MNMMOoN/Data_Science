@@ -129,13 +129,13 @@ class Load_Image_Data_with_URL:
         for root, dirs, _ in os.walk(self.dir_name):
             for d in dirs:
                 dir_lower = d.lower()
-                if 'train' in dir_lower:
+                if 'train' in dir_lower and not found_train:
                     found_train = os.path.join(root, d)
-                elif 'test' in dir_lower:
+                elif 'test' in dir_lower and not found_test:
                     found_test = os.path.join(root, d)
-            # Break early if both directories have been found
             if found_train and found_test:
                 break
+
 
         if not found_train or not found_test:
             raise FileNotFoundError(f"Could not find both 'train' and 'test' directories under extracted path '{self.dir_name}'.")
@@ -144,14 +144,9 @@ class Load_Image_Data_with_URL:
         self.test_dir = found_test
 
         if self.verbose:
+            print()
             print(f"Found train directory at: {self.train_dir}")
             print(f"Found test directory at: {self.test_dir}")
-
-
-
-        # Check if train and test directories exist
-        if not os.path.exists(self.train_dir) or not os.path.exists(self.test_dir):
-            raise FileNotFoundError(f"Expected 'train' and 'test' subdirectories in '{self.dir_name}/{self.dir_name}'.")
 
         if self.verbose:
             print()
