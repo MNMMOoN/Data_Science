@@ -128,9 +128,10 @@ class Load_Image_Data_with_URL:
         found_train, found_test = None, None
         for root, dirs, _ in os.walk(self.dir_name):
             for d in dirs:
-                if d.lower() == 'train':
+                dir_lower = d.lower()
+                if 'train' in dir_lower:
                     found_train = os.path.join(root, d)
-                elif d.lower() == 'test':
+                elif 'test' in dir_lower:
                     found_test = os.path.join(root, d)
             # Break early if both directories have been found
             if found_train and found_test:
