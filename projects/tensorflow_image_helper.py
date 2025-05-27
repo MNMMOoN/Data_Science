@@ -517,30 +517,9 @@ class Evaluation:
         plt.show()
 
 class Model_with_BaseModel:
-    """
-    A class to build, compile, train, and evaluate a model based on a given base model (e.g., EfficientNetB0).
-
-    Attributes:
-        base_model (tf.keras.Model): A pre-trained base model without the top layer.
-        input_shape (tuple): The shape of the input image, e.g., (224, 224, 3).
-        output_shape (int): Number of output classes.
-        model (tf.keras.Model): The final compiled model.
-        history (History): Training history after model.fit().
-        callbacks (ModelCallbacks): An instance of custom callbacks.
-    """
-
     def __init__(self, base_model, input_shape, output_shape, verbose=True):
-        """
-        Initializes the model pipeline.
-
-        Args:
-            base_model (tf.keras.Model): A pre-trained model like EfficientNetB0 with include_top=False.
-            input_shape (tuple): Input shape for the model.
-            output_shape (int): Number of output classes.
-            verbose (bool): Whether to print model summary and info.
-        """
         self.base_model = base_model
-        self.base_model.trainable = False  # Freeze base model initially
+        self.base_model.trainable = False  # Default to frozen
         self.input_shape = input_shape
         self.output_shape = output_shape
         self.model = None
@@ -548,13 +527,24 @@ class Model_with_BaseModel:
         self.callbacks = None
         self.verbose = verbose
 
-    def build_model(self):
+    def unfreeze_layers(self, num_layers):
         """
-        Builds and compiles the full model using the base model.
-        """
+        Unfreezes the last `num_layers` layers of the base model.
 
+        Args:
+            num_layers (int): Number of layers from the end to unfreeze.
+        """
+        if num_layers > len(self.base_model.layers):
+            raise ValueError(f"Cannot unfreeze {num_layers} layers. Base model has only {len(self.base_model.layers)} layers.")
+
+        for layer in self.base_model.layers[-num_layers:]:
+            layer.trainable = True
+
+        if self.verbose:
+            print(f"Last {num_layers} layers of base model unfrozen.")
+
+    def build_model(self):
         augmentation = tf.keras.Sequential([
-            tf.keras.layers.InputLayer(input_shape=self.input_shape),
             tf.keras.layers.RandomFlip("horizontal"),
             tf.keras.layers.RandomFlip("vertical"),
             tf.keras.layers.RandomRotation(0.2),
@@ -564,7 +554,7 @@ class Model_with_BaseModel:
 
         inputs = tf.keras.layers.Input(shape=self.input_shape, name="input_layer")
         x = augmentation(inputs)
-        x = self.base_model(inputs, training=False)
+        x = self.base_model(x, training=False)
         x = tf.keras.layers.GlobalAveragePooling2D(name="global_average_pooling_layer")(x)
         outputs = tf.keras.layers.Dense(self.output_shape, activation='softmax', name="output_layer")(x)
 
@@ -577,33 +567,17 @@ class Model_with_BaseModel:
             self.model.summary()
             print("Model compiled.\n\n")
 
-    def setup_callbacks(self, dir_name="TensorBoard", experiment_name="Experiment"):
-        """
-        Initializes callbacks using ModelCallbacks class.
-
-        Args:
-            dir_name (str): Directory to store TensorBoard logs.
-            experiment_name (str): Name of the experiment subdirectory.
-        """
+    def setup_callbacks(self, tensorboard_dir="TensorBoard", checkpoint_dir="CheckPoints", experiment_name="Experiment"):
         self.callbacks = ModelCallbacks()
-        self.callbacks.tensorboard(dir_name=dir_name, experiment_name=experiment_name)
+        self.callbacks.tensorboard(dir_name=tensorboard_dir, experiment_name=experiment_name)
         self.callbacks.early_stopping()
-        self.callbacks.checkpoint(dir_name=dir_name, experiment_name=experiment_name)
+        self.callbacks.checkpoint(dir_name=checkpoint_dir, experiment_name=experiment_name)
         if self.verbose:
             print("Callbacks initialized.")
 
     def train(self, train_data, val_data, epochs=10):
-        """
-        Trains the model.
-
-        Args:
-            train_data (tf.data.Dataset): Batched training dataset.
-            val_data (tf.data.Dataset): Batched validation dataset.
-            epochs (int): Number of training epochs.
-        """
         if self.model is None:
             raise ValueError("Model not built. Call build_model() first.")
-
         if self.callbacks is None:
             self.setup_callbacks()
 
@@ -616,15 +590,7 @@ class Model_with_BaseModel:
         if self.verbose:
             print("Training completed.")
 
-    def evaluate(self, test_data, class_names, val_eval= False):
-        """
-        Evaluates the trained model using the Evaluation class.
-
-        Args:
-            test_data (tf.data.Dataset): Batched test dataset.
-            class_names (list): List of class labels.
-            val_eval (bool): Whether to evaluate on validation data. Default is False.
-        """
+    def evaluate(self, test_data, class_names, val_eval=False):
         if self.model is None or self.history is None:
             raise ValueError("Model must be trained before evaluation.")
 
@@ -639,20 +605,10 @@ class Model_with_BaseModel:
 
         eval.plot_test_eval()
 
-    def plot_predictions(self, dataset, class_names, models = None, num_images=9):
-        """
-        Displays random image predictions.
-
-        Args:
-            dataset (tf.data.Dataset): Batched dataset to visualize predictions on.
-            class_names (list): List of class labels.
-            models (list): List of models to make predictions with. Default is an empty list.
-            num_images (int): Number of images to display.
-        """
-        all_models = []  # Always include the base model
+    def plot_predictions(self, dataset, class_names, models=None, num_images=9):
+        all_models = []
 
         if models:
-            # Extract actual tf.keras.Model from wrapper classes if necessary
             extracted_models = []
             for m in models:
                 if hasattr(m, 'model') and isinstance(m.model, tf.keras.Model):
@@ -661,13 +617,14 @@ class Model_with_BaseModel:
                     extracted_models.append(m)
                 else:
                     raise TypeError(f"Unsupported model type: {type(m)}")
-        all_models += extracted_models
+            all_models += extracted_models
+
         all_models.append(self.model)
 
         RandomPlot(dataset=dataset,
-                  class_names=class_names,
-                  models=all_models,
-                  num_images=num_images)
+                   class_names=class_names,
+                   models=all_models,
+                   num_images=num_images)
 
 
 
