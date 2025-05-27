@@ -258,23 +258,34 @@ class ModelCallbacks:
         if self.verbose:
             print(f"[TensorBoard] Log files will be saved to: {log_dir}")
 
-    def checkpoint(self, filepath='model_checkpoint.h5', save_best_only=True, monitor='val_loss'):
+    def checkpoint(self, dir_name, experiment_name, save_best_only=True, monitor='val_loss'):
         """
-        Create and store a model checkpoint callback.
+        Create and store a model checkpoint callback that saves only weights.
 
         Args:
-            filepath (str): Filepath where the model will be saved.
+            filepath (str): Filepath where the weights will be saved.
             save_best_only (bool): Whether to save only the best model (based on monitored metric).
             monitor (str): Metric to monitor for determining the best model.
         """
+        # Creating a filepath
+        filepath= os.path.join(
+            dir_name,
+            experiment_name,
+            datetime.datetime.now().strftime("%Y%m%d-%H%M%S")+'.weights.h5'
+        )
+
+        # Make sure the directory exists
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+
         self.checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
             filepath=filepath,
+            save_weights_only=True,  # <== Only weights, not full model
             save_best_only=save_best_only,
             monitor=monitor,
             verbose=1 if self.verbose else 0
         )
         if self.verbose:
-            print(f"[Checkpoint] Saving model to: {filepath} (monitoring '{monitor}')")
+            print(f"[Checkpoint] Saving only weights to: {filepath} (monitoring '{monitor}')")
 
     def early_stopping(self, patience=5, monitor='val_loss', restore_best_weights=True):
         """
@@ -504,3 +515,159 @@ class Evaluation:
         ax.set_xticklabels(self.class_names, rotation=45, ha='right')
         plt.tight_layout()
         plt.show()
+
+class Model_with_BaseModel:
+    """
+    A class to build, compile, train, and evaluate a model based on a given base model (e.g., EfficientNetB0).
+
+    Attributes:
+        base_model (tf.keras.Model): A pre-trained base model without the top layer.
+        input_shape (tuple): The shape of the input image, e.g., (224, 224, 3).
+        output_shape (int): Number of output classes.
+        model (tf.keras.Model): The final compiled model.
+        history (History): Training history after model.fit().
+        callbacks (ModelCallbacks): An instance of custom callbacks.
+    """
+
+    def __init__(self, base_model, input_shape, output_shape, verbose=True):
+        """
+        Initializes the model pipeline.
+
+        Args:
+            base_model (tf.keras.Model): A pre-trained model like EfficientNetB0 with include_top=False.
+            input_shape (tuple): Input shape for the model.
+            output_shape (int): Number of output classes.
+            verbose (bool): Whether to print model summary and info.
+        """
+        self.base_model = base_model
+        self.base_model.trainable = False  # Freeze base model initially
+        self.input_shape = input_shape
+        self.output_shape = output_shape
+        self.model = None
+        self.history = None
+        self.callbacks = None
+        self.verbose = verbose
+
+    def build_model(self):
+        """
+        Builds and compiles the full model using the base model.
+        """
+
+        augmentation = tf.keras.Sequential([
+            tf.keras.layers.InputLayer(input_shape=self.input_shape),
+            tf.keras.layers.RandomFlip("horizontal"),
+            tf.keras.layers.RandomFlip("vertical"),
+            tf.keras.layers.RandomRotation(0.2),
+            tf.keras.layers.RandomZoom(0.2),
+            tf.keras.layers.RandomTranslation(0.2, 0.2)
+        ], name="augmentation")
+
+        inputs = tf.keras.layers.Input(shape=self.input_shape, name="input_layer")
+        x = augmentation(inputs)
+        x = self.base_model(inputs, training=False)
+        x = tf.keras.layers.GlobalAveragePooling2D(name="global_average_pooling_layer")(x)
+        outputs = tf.keras.layers.Dense(self.output_shape, activation='softmax', name="output_layer")(x)
+
+        self.model = tf.keras.Model(inputs, outputs, name="TransferLearningModel")
+        self.model.compile(loss="categorical_crossentropy",
+                           optimizer=tf.keras.optimizers.Adam(),
+                           metrics=["accuracy"])
+
+        if self.verbose:
+            self.model.summary()
+            print("Model compiled.\n\n")
+
+    def setup_callbacks(self, dir_name="TensorBoard", experiment_name="Experiment"):
+        """
+        Initializes callbacks using ModelCallbacks class.
+
+        Args:
+            dir_name (str): Directory to store TensorBoard logs.
+            experiment_name (str): Name of the experiment subdirectory.
+        """
+        self.callbacks = ModelCallbacks()
+        self.callbacks.tensorboard(dir_name=dir_name, experiment_name=experiment_name)
+        self.callbacks.early_stopping()
+        self.callbacks.checkpoint(dir_name=dir_name, experiment_name=experiment_name)
+        if self.verbose:
+            print("Callbacks initialized.")
+
+    def train(self, train_data, val_data, epochs=10):
+        """
+        Trains the model.
+
+        Args:
+            train_data (tf.data.Dataset): Batched training dataset.
+            val_data (tf.data.Dataset): Batched validation dataset.
+            epochs (int): Number of training epochs.
+        """
+        if self.model is None:
+            raise ValueError("Model not built. Call build_model() first.")
+
+        if self.callbacks is None:
+            self.setup_callbacks()
+
+        self.history = self.model.fit(train_data,
+                                      validation_data=val_data,
+                                      epochs=epochs,
+                                      steps_per_epoch=len(train_data),
+                                      validation_steps=len(val_data),
+                                      callbacks=self.callbacks.get_callbacks())
+        if self.verbose:
+            print("Training completed.")
+
+    def evaluate(self, test_data, class_names, val_eval= False):
+        """
+        Evaluates the trained model using the Evaluation class.
+
+        Args:
+            test_data (tf.data.Dataset): Batched test dataset.
+            class_names (list): List of class labels.
+            val_eval (bool): Whether to evaluate on validation data. Default is False.
+        """
+        if self.model is None or self.history is None:
+            raise ValueError("Model must be trained before evaluation.")
+
+        eval = Evaluation(model=self.model,
+                          test_data=test_data,
+                          class_names=class_names,
+                          history=self.history,
+                          verbose=self.verbose)
+
+        if val_eval:
+            eval.plot_val_eval()
+
+        eval.plot_test_eval()
+
+    def plot_predictions(self, dataset, class_names, models = None, num_images=9):
+        """
+        Displays random image predictions.
+
+        Args:
+            dataset (tf.data.Dataset): Batched dataset to visualize predictions on.
+            class_names (list): List of class labels.
+            models (list): List of models to make predictions with. Default is an empty list.
+            num_images (int): Number of images to display.
+        """
+        all_models = []  # Always include the base model
+
+        if models:
+            # Extract actual tf.keras.Model from wrapper classes if necessary
+            extracted_models = []
+            for m in models:
+                if hasattr(m, 'model') and isinstance(m.model, tf.keras.Model):
+                    extracted_models.append(m.model)
+                elif isinstance(m, tf.keras.Model):
+                    extracted_models.append(m)
+                else:
+                    raise TypeError(f"Unsupported model type: {type(m)}")
+        all_models += extracted_models
+        all_models.append(self.model)
+
+        RandomPlot(dataset=dataset,
+                  class_names=class_names,
+                  models=all_models,
+                  num_images=num_images)
+
+
+
