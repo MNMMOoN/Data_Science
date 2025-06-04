@@ -16,20 +16,19 @@
 
 ## 📋 Table of Contents
 
-1. [Repository Structure](#repository-structure)  
-2. [Project Descriptions & Links](#project-descriptions--links)  
-   - [Computer Vision](#computer-vision)  
-   - [Healthcare & Epidemiology](#healthcare--epidemiology)  
-   - [Tabular & Regression Tasks](#tabular--regression-tasks)  
-   - [Natural Language Processing](#natural-language-processing)  
-   - [Exploratory Data Analysis (EDA)](#exploratory-data-analysis-eda)  
-   - [Other Folders](#other-folders)  
-3. [Prerequisites & Installation](#prerequisites--installation)  
-4. [How to Run Projects](#how-to-run-projects)  
-5. [Code Style & Best Practices](#code-style--best-practices)  
-6. [Contributing](#contributing)  
-7. [License](#license)  
-8. [Contact & Acknowledgments](#contact--acknowledgments)  
+## 📚 Table of Contents
+
+1. [📁 Repository Structure](#repository-structure)  
+2. [📂 Projects Overview](#project-descriptions--links)  
+   - [💻 Computer Vision](#computer-vision)  
+   - [🏥 Healthcare & Epidemiology](#healthcare--epidemiology)  
+   - [📊 Tabular & Regression Tasks](#tabular--regression-tasks)  
+   - [🗣️ Natural Language Processing](#natural-language-processing)  
+   - [🔍 Exploratory Data Analysis (EDA)](#exploratory-data-analysis-eda)  
+   - [📂 Other Folders](#other-folders)  
+3. [🤝 Contributing](#contributing)  
+4. [📜 License](#license)  
+5. [📬 Contact & Acknowledgments](#contact--acknowledgments)  
 
 ---
 
