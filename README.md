@@ -60,7 +60,7 @@ Data_Science/
 │   └── social_media_addiction/
 └── sql/
     └── mysql/
-
+```
 ---
 
 ## 🔗 Project Descriptions & Links
