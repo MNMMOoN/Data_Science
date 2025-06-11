@@ -172,15 +172,31 @@ Below are all projects organized by theme. Click on each link to navigate direct
 
 ### 🗣 Natural Language Processing
 
-1. **[Disaster Tweet Classification](projects/disaster_tweets/disaster_tweets_classification.ipynb)**  
+1. **[Disaster Tweet Classification](projects/disaster_tweets/disaster_tweets.ipynb)**  
    - **Dataset:** [NLP Getting Started Competition (Kaggle)](https://www.kaggle.com/competitions/nlp-getting-started)  
    - **Key Techniques & Workflow:**  
      - Text preprocessing: removed punctuation, lowercased text, removed stopwords.  
      - Converted tweets into TF-IDF vectors using scikit-learn’s `TfidfVectorizer`.  
      - Trained and compared **Multinomial Naïve Bayes**, **Logistic Regression**, and **SVM** classifiers.  
-     - Reported precision, recall, F1-score and visualized confusion matrix heatmaps.  
+     - Reported precision, recall, F1-score and visualized confusion matrix heatmaps.
 
-2. **[IMDB Movie Review Sentiment Analysis](projects/imdb_movie_review/imdb_review_classification.ipynb)**  
+2. **[Disaster Tweet Classification](projects/disaster_tweets/disaster_tweets_with_tf.ipynb)**
+   - **Dataset:** [NLP Getting Started Competition (Kaggle)](https://www.kaggle.com/competitions/nlp-getting-started)
+   - **Key Techniques & Workflow:**
+     - Loaded and prepared data from a zipped archive.
+     - Developed a custom `ModelCallbacks` class for TensorBoard logging, model checkpointing, and early stopping.
+     - Built and evaluated various deep learning models for text classification:
+       - **Model 0:** Naive Bayes using TF-IDF (as a baseline).
+       - **Model 1:** Feed-Forward Neural Network with Embedding Layer.
+       - **Model 2:** Recurrent Neural Network with LSTM Layer.
+       - **Model 3:** Recurrent Neural Network with GRU and LSTM Layers.
+       - **Model 4:** Recurrent Neural Network with Bidirectional LSTM and GRU Layers.
+       - **Model 5:** Convolutional Neural Network (CNN).
+       - **Model 6:** Transfer Learning using the Universal Sentence Encoder embedding layer (including training on a reduced dataset).
+     - Visualized model performance using TensorBoard.
+     - Implemented a custom `evaluate_model` function to display classification reports and confusion matrices.
+
+3. **[IMDB Movie Review Sentiment Analysis](projects/imdb_movie_review/imdb_review_classification.ipynb)**  
    - **Dataset:** [Bag of Words Meets Bags of Popcorn (Kaggle)](https://www.kaggle.com/competitions/word2vec-nlp-tutorial)  
    - **Key Techniques & Workflow:**  
      - Vectorized reviews using both **CountVectorizer** and **TF-IDF**.  
