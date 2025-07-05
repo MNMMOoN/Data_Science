@@ -95,7 +95,7 @@ Below are all projects organized by theme. Click on each link to navigate direct
      - Train/validation split with stratification to ensure balanced classes.  
      - Evaluated using accuracy, ROC AUC, and created Grad-CAM saliency maps for interpretability.  
 
-4. **[Brain Tumor Classification (4 classes)](projects/brain_tumor_classification/tumor_classification.ipynb)**  
+4. **[Brain Tumor Classification (4 classes)](projects/brain_tumor_classification/brain_tumor.ipynb)**  
    - **Dataset:** [Brain Tumor Classification MRI (Kaggle)](https://www.kaggle.com/datasets/sartajbhuvaji/brain-tumor-classification-mri)  
    - **Classes:** Glioma, Meningioma, Pituitary, No Tumor  
    - **Key Techniques & Workflow:**  
@@ -109,7 +109,7 @@ Below are all projects organized by theme. Click on each link to navigate direct
 
 ### 🏥 Healthcare & Epidemiology
 
-1. **[Medical Cost Prediction](projects/medical_cost_personal/medical_cost_prediction.ipynb)**  
+1. **[Medical Cost Prediction](projects/medical_cost_personal/medical_cost_personal.ipynb)**  
    - **Dataset:** [Insurance Cost Dataset (Kaggle)](https://www.kaggle.com/datasets/mirichoi0218/insurance)  
    - **Key Techniques & Workflow:**  
      - Data cleaning: handled missing values, detected and removed outliers.  
@@ -117,7 +117,7 @@ Below are all projects organized by theme. Click on each link to navigate direct
      - Built a deep neural network in TensorFlow (two hidden layers, ReLU activations).  
      - Monitored training/validation loss curves; reported final MSE and MAE on test set.  
 
-2. **[Pima Indians Diabetes Prediction](projects/pima_indians_diabetes/pima_diabetes_prediction.ipynb)**  
+2. **[Pima Indians Diabetes Prediction](projects/pima_indians_diabetes/diabetes_prediction.ipynb)**  
    - **Dataset:** [Pima Indians Diabetes Database (Kaggle)](https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database)  
    - **Key Techniques & Workflow:**  
      - Exploratory Data Analysis (EDA): histograms, boxplots, correlation heatmaps.  
@@ -125,7 +125,7 @@ Below are all projects organized by theme. Click on each link to navigate direct
      - Performed hyperparameter tuning with `GridSearchCV` (searching for optimal k).  
      - Evaluated performance using ROC curve, AUC score, and confusion matrix.  
 
-3. **[Climate-Driven Disease Spread Prediction](projects/disease_spread/disease_forecast.ipynb)**  
+3. **[Climate-Driven Disease Spread Prediction](projects/disease_spread/disease_spread.ipynb)**  
    - **Dataset:** [Climate-Driven Disease Spread (Kaggle)](https://www.kaggle.com/datasets/hopeofchange/climate-driven-disease-spread)  
    - **Target:** Forecast malaria and dengue case counts from climate and socio-economic variables  
    - **Key Techniques & Workflow:**  
@@ -138,7 +138,7 @@ Below are all projects organized by theme. Click on each link to navigate direct
 
 ### 📊 Tabular & Regression Tasks
 
-1. **[Students’ Social Media Addiction Prediction](projects/social_media_addiction/social_media_addiction_prediction.ipynb)**  
+1. **[Students’ Social Media Addiction Prediction](projects/social_media_addiction/social_media_addiction.ipynb)**  
    - **Dataset:** [Social Media Addiction vs. Relationships (Kaggle)](https://www.kaggle.com/datasets/adilshamim8/social-media-addiction-vs-relationships/code)  
    - **Key Techniques & Workflow:**  
      - Data preprocessing: filled missing demographics, scaled numerical usage metrics (min–max scaling).  
@@ -146,7 +146,7 @@ Below are all projects organized by theme. Click on each link to navigate direct
      - Trained and compared **Random Forest** and **Bayesian Ridge** models to identify at-risk students.  
      - Visualized feature importance to highlight top predictors of addiction.  
 
-2. **[Lending Club Loan Status Prediction](projects/lending_club_loan_status/loan_status_prediction.ipynb)**  
+2. **[Lending Club Loan Status Prediction](projects/lending_club_loan_status/lending_club.ipynb)**  
    - **Dataset:** [Lending Club Loan Defaulters (Kaggle)](https://www.kaggle.com/code/faressayah/lending-club-loan-defaulters-prediction)  
    - **Key Techniques & Workflow:**  
      - Data cleaning: encoded categorical variables (one-hot for loan purpose, grade), handled missing numeric values.  
@@ -154,14 +154,14 @@ Below are all projects organized by theme. Click on each link to navigate direct
      - Trained and compared **Random Forest** vs. **Decision Tree** classifiers.  
      - Reported accuracy, precision, recall, and displayed ROC curves.  
 
-3. **[E-commerce Customers Analysis](projects/ecommerce_customers/ecommerce_customers_analysis.ipynb)**  
+3. **[E-commerce Customers Analysis](projects/ecommerce_customers/ecommerce_customers.ipynb)**  
    - **Dataset:** [E-commerce Customers (Kaggle)](https://www.kaggle.com/datasets/srolka/ecommerce-customers)  
    - **Key Techniques & Workflow:**  
      - EDA: scatterplots of yearly spending vs. account tenure, bar charts of gender distribution.  
      - Performed **Linear Regression** to predict yearly spending based on tenure, history, and average session length.  
      - Analyzed residuals, reported R² score, and visualized model fit.  
 
-4. **[Advertisement Click Prediction](projects/advertisement_click_on_ads/advertisement_click.ipynb)**  
+4. **[Advertisement Click Prediction](projects/advertisement_click_on_ads/advertisement.ipynb)**  
    - **Dataset:** [Advertisement Click on Ad (Kaggle)](https://www.kaggle.com/datasets/gabrielsantello/advertisement-click-on-ad)  
    - **Key Techniques & Workflow:**  
      - Preprocessing: one-hot encoding for ad topic and device type, scaled numerical features.  
@@ -172,15 +172,31 @@ Below are all projects organized by theme. Click on each link to navigate direct
 
 ### 🗣 Natural Language Processing
 
-1. **[Disaster Tweet Classification](projects/disaster_tweets/disaster_tweets_classification.ipynb)**  
+1. **[Disaster Tweet Classification](projects/disaster_tweets/disaster_tweets.ipynb)**  
    - **Dataset:** [NLP Getting Started Competition (Kaggle)](https://www.kaggle.com/competitions/nlp-getting-started)  
    - **Key Techniques & Workflow:**  
      - Text preprocessing: removed punctuation, lowercased text, removed stopwords.  
      - Converted tweets into TF-IDF vectors using scikit-learn’s `TfidfVectorizer`.  
      - Trained and compared **Multinomial Naïve Bayes**, **Logistic Regression**, and **SVM** classifiers.  
-     - Reported precision, recall, F1-score and visualized confusion matrix heatmaps.  
+     - Reported precision, recall, F1-score and visualized confusion matrix heatmaps.
 
-2. **[IMDB Movie Review Sentiment Analysis](projects/imdb_movie_review/imdb_review_classification.ipynb)**  
+2. **[Disaster Tweet Classification](projects/disaster_tweets/disaster_tweets_with_tf.ipynb)**
+   - **Dataset:** [NLP Getting Started Competition (Kaggle)](https://www.kaggle.com/competitions/nlp-getting-started)
+   - **Key Techniques & Workflow:**
+     - Loaded and prepared data from a zipped archive.
+     - Developed a custom `ModelCallbacks` class for TensorBoard logging, model checkpointing, and early stopping.
+     - Built and evaluated various deep learning models for text classification:
+       - **Model 0:** Naive Bayes using TF-IDF (as a baseline).
+       - **Model 1:** Feed-Forward Neural Network with Embedding Layer.
+       - **Model 2:** Recurrent Neural Network with LSTM Layer.
+       - **Model 3:** Recurrent Neural Network with GRU and LSTM Layers.
+       - **Model 4:** Recurrent Neural Network with Bidirectional LSTM and GRU Layers.
+       - **Model 5:** Convolutional Neural Network (CNN).
+       - **Model 6:** Transfer Learning using the Universal Sentence Encoder embedding layer (including training on a reduced dataset).
+     - Visualized model performance using TensorBoard.
+     - Implemented a custom `evaluate_model` function to display classification reports and confusion matrices.
+
+3. **[IMDB Movie Review Sentiment Analysis](projects/imdb_movie_review/imdb_movie_review.ipynb)**  
    - **Dataset:** [Bag of Words Meets Bags of Popcorn (Kaggle)](https://www.kaggle.com/competitions/word2vec-nlp-tutorial)  
    - **Key Techniques & Workflow:**  
      - Vectorized reviews using both **CountVectorizer** and **TF-IDF**.  
@@ -199,7 +215,7 @@ Below are all projects organized by theme. Click on each link to navigate direct
      - Grouped calls by emergency type and plotted count trends over time.  
      - Created Seaborn visualizations: heatmaps of call density, line plots of monthly trends.  
 
-2. **[Netflix Movies & TV Shows Analysis](projects/netflix_movies_and_tv_shows/netflix_shows_analysis.ipynb)**  
+2. **[Netflix Movies & TV Shows Analysis](projects/netflix_movies_and_tv_shows/netflix_movies_and_tv_shows.ipynb)**  
    - **Dataset:** [Netflix Shows (Kaggle)](https://www.kaggle.com/datasets/shivamb/netflix-shows)  
    - **Key Techniques & Workflow:**  
      - Cleaned data: parsed release year, split cast and director columns.  
