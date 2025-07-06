@@ -172,7 +172,26 @@ Below are all projects organized by theme. Click on each link to navigate direct
 
 ### 🗣 Natural Language Processing
 
-1. **[Disaster Tweet Classification](projects/disaster_tweets/disaster_tweets.ipynb)**  
+1. **[PubMed RCT Text Classification](projects/pubmed_rct/pubmed_rct.ipynb)**  
+   - **Dataset:** [PubMed 20k RCT Dataset (AllenAI)](https://github.com/Franck-Dernoncourt/pubmed-rct)  
+   - **Key Techniques & Workflow:**  
+     - Cleaned and prepared raw abstract data into structured form with labeled sentences.  
+     - Tokenized input data and used **Padding** and **Truncation** for uniform sequence length.  
+     - Built a series of deep learning models using **Keras**:
+        - **Model 0:** Naive Bayes Classification.
+        - **Model 1:** Simple Dense Feed-Forward Neural Network.
+        - **Model 2:** LSTM-based Recurrent Neural Network.
+        - **Model 3:** GRU-based Recurrent Neural Network.
+        - **Model 4:** Bidirectional LSTM.
+        - **Model 5:** Convolutional Neural Network.
+        - **Model 6:** Transfer Learning - Universal Sentence Encoder Embedding Layer.
+        - **Model 7:** Character-level Embedding Layer.
+        - **Model 8:** Combination of Char-level Embedding and Token-level Embedding.
+        - **Model 9:** Model 8 with Positional Embedding.
+     - Used custom `ModelCallbacks` for logging, checkpointing, and early stopping.
+     - Visualized performance with TensorBoard, confusion matrices, and classification metrics.
+
+2. **[Disaster Tweet Classification](projects/disaster_tweets/disaster_tweets.ipynb)**  
    - **Dataset:** [NLP Getting Started Competition (Kaggle)](https://www.kaggle.com/competitions/nlp-getting-started)  
    - **Key Techniques & Workflow:**  
      - Text preprocessing: removed punctuation, lowercased text, removed stopwords.  
@@ -180,7 +199,7 @@ Below are all projects organized by theme. Click on each link to navigate direct
      - Trained and compared **Multinomial Naïve Bayes**, **Logistic Regression**, and **SVM** classifiers.  
      - Reported precision, recall, F1-score and visualized confusion matrix heatmaps.
 
-2. **[Disaster Tweet Classification](projects/disaster_tweets/disaster_tweets_with_tf.ipynb)**
+3. **[Disaster Tweet Classification](projects/disaster_tweets/disaster_tweets_with_tf.ipynb)**
    - **Dataset:** [NLP Getting Started Competition (Kaggle)](https://www.kaggle.com/competitions/nlp-getting-started)
    - **Key Techniques & Workflow:**
      - Loaded and prepared data from a zipped archive.
@@ -196,7 +215,7 @@ Below are all projects organized by theme. Click on each link to navigate direct
      - Visualized model performance using TensorBoard.
      - Implemented a custom `evaluate_model` function to display classification reports and confusion matrices.
 
-3. **[IMDB Movie Review Sentiment Analysis](projects/imdb_movie_review/imdb_movie_review.ipynb)**  
+4. **[IMDB Movie Review Sentiment Analysis](projects/imdb_movie_review/imdb_movie_review.ipynb)**  
    - **Dataset:** [Bag of Words Meets Bags of Popcorn (Kaggle)](https://www.kaggle.com/competitions/word2vec-nlp-tutorial)  
    - **Key Techniques & Workflow:**  
      - Vectorized reviews using both **CountVectorizer** and **TF-IDF**.  
